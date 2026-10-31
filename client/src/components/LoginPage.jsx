@@ -308,14 +308,14 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
                 <div>
                   <label className="block text-slate-700 font-semibold mb-1 uppercase tracking-wider text-[10px]">
-                    PRN OR INSTITUTIONAL EMAIL *
+                    PRN, EMAIL, OR USERNAME *
                   </label>
                   <div className="relative">
                     <CreditCard className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                     <input
                       type="text"
                       required
-                      placeholder="Enter your PRN or Email"
+                      placeholder="Enter PRN, Email, or Name (e.g. Ashish Yadav or admin)"
                       value={emailOrPrn}
                       onChange={(e) => setEmailOrPrn(e.target.value)}
                       className="w-full bg-slate-50/70 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white placeholder:text-slate-400"

@@ -1,3 +1,11 @@
+const dns = require('dns');
+
+// Fix MongoDB Atlas DNS resolution issue (SRV record lookup)
+dns.setServers([
+  '8.8.8.8',
+  '8.8.4.4'
+]);
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -56,4 +64,11 @@ mongoose.connect(MONGO_URI)
   })
   .catch((err) => {
     console.error('[Database Error] Failed to connect to MongoDB:', err.message);
+    if (err.message.includes('querySrv') || err.message.includes('ECONNREFUSED')) {
+      console.error('💡 DNS Tip: If DNS resolution fails for MongoDB Atlas, Google DNS (8.8.8.8) is active. Verify internet connectivity.');
+    } else if (err.message.includes('bad auth') || err.message.includes('Authentication failed')) {
+      console.error('💡 Auth Tip: MongoDB Atlas authentication failed. Please check the username and password in MONGO_URI.');
+    } else if (err.message.includes('timed out') || err.message.includes('Server selection timed out')) {
+      console.error('💡 Network Access Tip: Connection timed out. Make sure your IP is whitelisted in MongoDB Atlas -> Network Access (add 0.0.0.0/0 to allow all).');
+    }
   });

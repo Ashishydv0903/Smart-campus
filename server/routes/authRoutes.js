@@ -184,13 +184,25 @@ router.post('/login', async (req, res) => {
     const cleanInput = email.trim();
     const searchRegex = new RegExp(`^${cleanInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
 
-    // Query strictly by institutional email OR PRN/Admin ID
-    const user = await User.findOne({
+    // Query by institutional email, PRN/Admin ID, or Full Name (case-insensitive)
+    let user = await User.findOne({
       $or: [
         { email: searchRegex },
-        { prn: searchRegex }
+        { prn: searchRegex },
+        { name: searchRegex }
       ]
     });
+
+    // Fallback: If user entered their first name or partial name (e.g. "Ashish")
+    if (!user && cleanInput.length >= 3) {
+      const looseRegex = new RegExp(cleanInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      user = await User.findOne({
+        $or: [
+          { name: looseRegex },
+          { prn: searchRegex }
+        ]
+      });
+    }
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials. User not found.' });

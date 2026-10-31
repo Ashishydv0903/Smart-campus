@@ -1,3 +1,11 @@
+const dns = require('dns');
+
+// Fix MongoDB Atlas DNS resolution issue (SRV record lookup)
+dns.setServers([
+  '8.8.8.8',
+  '8.8.4.4'
+]);
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
