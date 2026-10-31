@@ -132,6 +132,10 @@ export default function App() {
         }
       });
       const data = await res.json();
+      if (res.status === 401) {
+        handleLogout();
+        return;
+      }
       if (data.success) {
         setComplaints(data.complaints);
       }

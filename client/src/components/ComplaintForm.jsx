@@ -131,6 +131,10 @@ export default function ComplaintForm({ currentUser, onSuccess }) {
       });
 
       const data = await res.json();
+      if (res.status === 401) {
+        setErrorMsg('Your session token has expired (or the server security key was updated). Please click "Sign Out" at the top right and sign back in.');
+        return;
+      }
       if (data.success) {
         setSuccessMsg(data.message);
         setTimeout(() => {
@@ -159,6 +163,10 @@ export default function ComplaintForm({ currentUser, onSuccess }) {
         }
       });
       const data = await res.json();
+      if (res.status === 401) {
+        setErrorMsg('Your session token has expired (or the server security key was updated). Please click "Sign Out" at the top right and sign back in.');
+        return;
+      }
       if (data.success) {
         setSuccessMsg(data.message);
         setTimeout(() => {
