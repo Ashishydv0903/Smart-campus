@@ -41,9 +41,20 @@ export default function TicketDetailModal({
 
   const isTechnician = currentUser?.role === 'technician';
   const isHead = ['hod', 'director', 'admin'].includes(currentUser?.role);
-  const isComplainant = ['student', 'teacher'].includes(currentUser?.role);
-  const isReporterOrSubscriber = ticket.reportedBy?.userId === currentUser?._id || 
-    ticket.cluster?.subscribers?.some(s => s.userId === currentUser?._id);
+  const isComplainantRole = ['student', 'teacher'].includes(currentUser?.role);
+
+  const currentUserId = currentUser?._id || currentUser?.id;
+  const currentUserEmail = currentUser?.email?.toLowerCase();
+
+  // Strict check: Complainant who originally raised or joined this concern (EXCLUDES technicians)
+  const isComplainantWhoRaised = !isTechnician && (
+    (currentUserId && ticket.reportedBy?.userId && String(ticket.reportedBy.userId) === String(currentUserId)) ||
+    (currentUserEmail && ticket.reportedBy?.email && ticket.reportedBy.email.toLowerCase() === currentUserEmail) ||
+    ticket.cluster?.subscribers?.some(s => 
+      (currentUserId && s.userId && String(s.userId) === String(currentUserId)) ||
+      (currentUserEmail && s.email && s.email.toLowerCase() === currentUserEmail)
+    )
+  );
 
   const isPendingVerification = ticket.status === 'Pending_Verification';
   const isResolved = ticket.status === 'Resolved';
@@ -224,7 +235,8 @@ export default function TicketDetailModal({
         {/* =============================================================== */}
         {/* ACTION PANEL 1: STUDENT / TEACHER VERIFICATION & CLOSURE        */}
         {/* =============================================================== */}
-        {isPendingVerification && (
+        {/* Case A: The user who raised/joined this issue sees the Rating & Verification Sign-Off */}
+        {isPendingVerification && isComplainantWhoRaised && (
           <div className="p-4 bg-amber-50 border-2 border-amber-300 rounded-xl space-y-3">
             <div className="flex items-start space-x-2.5">
               <CheckCircle2 className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -236,7 +248,7 @@ export default function TicketDetailModal({
                   Staff Note: <em>"{ticket.media?.resolutionNotes || 'Repairs completed on site.'}"</em>
                 </p>
                 <p className="text-xs text-amber-900 font-semibold mt-1">
-                  Did the fix work? As the person who raised or joined this concern, only you can close it.
+                  Did the fix work? As the person who raised or joined this concern, only you can rate and close it.
                 </p>
               </div>
             </div>
@@ -278,6 +290,38 @@ export default function TicketDetailModal({
                 <span>No, Still Broken — Reopen</span>
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Case B: Maintenance staff sees a locked read-only notification */}
+        {isPendingVerification && isTechnician && (
+          <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+            <div className="flex items-center space-x-2 text-blue-900 font-bold text-xs">
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
+              <span>Repair Completed — Awaiting Student Verification</span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Your repair notes and proof photo have been submitted. Under campus governance rules, <strong>only the user who reported this concern ({ticket.reportedBy?.name}) can inspect the repair, submit a rating, and officially close the ticket</strong>. Technicians cannot rate or verify their own repairs.
+            </p>
+            <div className="text-[11px] text-slate-500 font-medium">
+              Status: Waiting for {ticket.reportedBy?.name} to inspect & verify.
+            </div>
+          </div>
+        )}
+
+        {/* Case C: Other users (HOD, Director, other students) see read-only status */}
+        {isPendingVerification && !isComplainantWhoRaised && !isTechnician && (
+          <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-xl space-y-2">
+            <div className="flex items-center space-x-2 text-amber-900 font-bold text-xs">
+              <Clock className="w-4 h-4 text-amber-600" />
+              <span>Work Done — Awaiting Complainant Sign-Off</span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Staff Note: <em>"{ticket.media?.resolutionNotes || 'Repairs completed on site.'}"</em>
+            </p>
+            <p className="text-[11px] text-amber-800">
+              This ticket is awaiting inspection and star rating by <strong>{ticket.reportedBy?.name}</strong>.
+            </p>
           </div>
         )}
 

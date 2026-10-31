@@ -29,8 +29,20 @@ const PRIORITY_CONFIG = {
 export default function TicketCard({ ticket, currentUser, onSelect, onUpvote }) {
   const statusInfo = STATUS_CONFIG[ticket.status] || STATUS_CONFIG.Reported;
   const priorityInfo = PRIORITY_CONFIG[ticket.priority] || PRIORITY_CONFIG.P3;
-  const hasUpvoted = ticket.cluster?.subscribers?.some(s => s.userId === currentUser?._id || s.email === currentUser?.email);
-  const isReporter = ticket.reportedBy?.userId === currentUser?._id;
+
+  const currentUserId = currentUser?._id || currentUser?.id;
+  const currentUserEmail = currentUser?.email?.toLowerCase();
+
+  const isTechnician = currentUser?.role === 'technician';
+  const isReporter = !isTechnician && (
+    (currentUserId && ticket.reportedBy?.userId && String(ticket.reportedBy.userId) === String(currentUserId)) ||
+    (currentUserEmail && ticket.reportedBy?.email && ticket.reportedBy.email.toLowerCase() === currentUserEmail)
+  );
+
+  const hasUpvoted = !isTechnician && ticket.cluster?.subscribers?.some(s => 
+    (currentUserId && s.userId && String(s.userId) === String(currentUserId)) ||
+    (currentUserEmail && s.email && s.email.toLowerCase() === currentUserEmail)
+  );
 
   const isPendingVerification = ticket.status === 'Pending_Verification';
   const isComplainant = ['student', 'teacher'].includes(currentUser?.role);

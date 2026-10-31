@@ -316,9 +316,20 @@ export default function App() {
   // =========================================================================
   // VIEW 3: PROTECTED ROLE DASHBOARD (Only entered AFTER login!)
   // =========================================================================
-  const myPendingVerifications = complaints.filter(
-    c => c.status === 'Pending_Verification' && 
-         (c.reportedBy?.userId === currentUser?._id || c.cluster?.subscribers?.some(s => s.userId === currentUser?._id))
+  const currentUserId = currentUser?._id || currentUser?.id;
+  const currentUserEmail = (currentUser?.email || '').toLowerCase();
+  const isTechnician = currentUser?.role === 'technician';
+
+  // Technicians must never see the complainant verification prompt banner
+  const myPendingVerifications = isTechnician ? [] : complaints.filter(
+    c => c.status === 'Pending_Verification' && (
+      (currentUserId && c.reportedBy?.userId && String(c.reportedBy.userId) === String(currentUserId)) ||
+      (currentUserEmail && c.reportedBy?.email && c.reportedBy.email.toLowerCase() === currentUserEmail) ||
+      c.cluster?.subscribers?.some(s => 
+        (currentUserId && s.userId && String(s.userId) === String(currentUserId)) ||
+        (currentUserEmail && s.email && s.email.toLowerCase() === currentUserEmail)
+      )
+    )
   );
 
   return (
