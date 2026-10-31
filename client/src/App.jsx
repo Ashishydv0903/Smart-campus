@@ -559,7 +559,7 @@ export default function App() {
 
       {/* Dashboard Footer */}
       <footer className="border-t border-slate-200 bg-white py-4 mt-8 text-center text-xs text-slate-500">
-        CampusCare • Logged in as <strong className="text-slate-800">{currentUser?.name}</strong> ({currentUser?.role?.toUpperCase()}) at <strong className="text-blue-600">@{currentUser?.institutionDomain}</strong> •{' '}
+        SmartCampus • Logged in as <strong className="text-slate-800">{currentUser?.name}</strong> ({currentUser?.role?.toUpperCase()}) at <strong className="text-blue-600">@{currentUser?.institutionDomain}</strong> •{' '}
         <button onClick={handleLogout} className="text-rose-600 hover:underline font-semibold ml-1">
           Sign Out
         </button>

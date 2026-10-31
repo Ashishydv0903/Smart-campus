@@ -91,7 +91,7 @@ export default function LandingPage({ onGetStarted }) {
         </div>
       </section>
 
-      {/* WHY USE CAMPUSFIX? */}
+      {/* WHY USE SMARTCAMPUS? */}
       <section className="py-14 px-4 sm:px-6 max-w-5xl mx-auto space-y-8">
         <div className="text-center">
           <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">
@@ -251,7 +251,7 @@ export default function LandingPage({ onGetStarted }) {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 space-y-2">
-        <p>© 2026 CampusFix • Built for smart campus complaint management.</p>
+        <p>© 2026 SmartCampus • Built for smart campus complaint management.</p>
         <p className="space-x-4 text-[11px] text-slate-400">
           <a href="#" className="hover:underline">Privacy Policy</a>
           <span>•</span>

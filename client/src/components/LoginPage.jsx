@@ -383,7 +383,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
 
                 <div className="pt-2 text-center border-t border-slate-100">
-                  <span className="text-xs text-slate-500">New to Campus Fix? </span>
+                  <span className="text-xs text-slate-500">New to SmartCampus? </span>
                   <button
                     type="button"
                     onClick={() => {

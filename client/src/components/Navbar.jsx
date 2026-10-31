@@ -44,7 +44,7 @@ export default function Navbar({
               <Building className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-base font-bold text-slate-900 tracking-tight">CampusCare</span>
+              <span className="text-base font-bold text-slate-900 tracking-tight">SmartCampus</span>
               <span className="text-xs text-slate-500 block -mt-0.5">
                 @{currentUser?.institutionDomain || 'campus.edu'} Portal
               </span>

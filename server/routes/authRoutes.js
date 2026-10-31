@@ -156,7 +156,7 @@ router.post('/register', async (req, res) => {
     const token = generateToken(user);
     res.status(201).json({
       success: true,
-      message: `Welcome to CampusFix for @${domain}!`,
+      message: `Welcome to SmartCampus for @${domain}!`,
       token,
       user: {
         id: user._id,
