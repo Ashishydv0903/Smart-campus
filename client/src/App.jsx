@@ -25,6 +25,41 @@ import {
   CheckCheck
 } from 'lucide-react';
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('UI Error caught by boundary:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="bg-white border border-rose-200 rounded-2xl p-8 max-w-lg mx-auto my-12 text-center shadow-sm space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-bold text-slate-900">Something went wrong loading this section</h3>
+          <p className="text-xs text-slate-500">
+            {this.state.error?.message || 'An unexpected error occurred.'}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition-colors"
+          >
+            Reload Section
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   // Page state: 'landing' | 'login' | 'dashboard'
   const [currentView, setCurrentView] = useState('landing');
@@ -293,6 +328,7 @@ export default function App() {
       />
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+        <ErrorBoundary>
         {/* Verification Alert Banner for Students/Teachers */}
         {myPendingVerifications.length > 0 && activeTab !== 'submit' && activeTab !== 'colleges' && activeTab !== 'students' && (
           <div className="p-4 bg-amber-50 border-2 border-amber-300 rounded-xl text-amber-900 flex items-center justify-between shadow-sm">
@@ -542,6 +578,7 @@ export default function App() {
             currentUser={currentUser}
           />
         )}
+        </ErrorBoundary>
       </main>
 
       {/* Ticket Details Modal */}

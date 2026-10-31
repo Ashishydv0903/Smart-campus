@@ -43,6 +43,7 @@ export default function ComplaintForm({ currentUser, onSuccess }) {
     evidencePhotoUrl: ''
   });
 
+  const [duplicateNotice, setDuplicateNotice] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
